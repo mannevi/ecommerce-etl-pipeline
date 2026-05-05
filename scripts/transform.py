@@ -70,10 +70,16 @@ def aggregate_data(merged_df):
 
 def transform(orders_df, users_df):
     logger.info("Starting transformation...")
-    orders_clean = clean_orders(orders_df)
-    users_clean = clean_users(users_df)
-    orders_filtered = filter_orders(orders_clean)
-    merged_df = merge_data(orders_filtered, users_clean)
-    revenue_per_user, revenue_by_country, daily_revenue = aggregate_data(merged_df)
-    logger.info("Transformation complete.")
-    return merged_df, revenue_per_user, revenue_by_country, daily_revenue
+
+    try:
+        orders_clean = clean_orders(orders_df)
+        users_clean = clean_users(users_df)
+        orders_filtered = filter_orders(orders_clean)
+        merged_df = merge_data(orders_filtered, users_clean)
+        revenue_per_user, revenue_by_country, daily_revenue = aggregate_data(merged_df)
+        logger.info("Transformation complete.")
+        return merged_df, revenue_per_user, revenue_by_country, daily_revenue
+
+    except Exception as e:
+        logger.error(f"Transformation failed: {e}")
+        raise

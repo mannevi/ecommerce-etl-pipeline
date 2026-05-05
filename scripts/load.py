@@ -22,17 +22,27 @@ def load(merged_df, users_df, revenue_per_user,
          revenue_by_country, daily_revenue):
 
     logger.info("Starting load...")
-    connection = get_connection()
+    connection = None
 
-    load_dataframe(merged_df,          "fact_orders",        connection)
-    load_dataframe(users_df,           "dim_users",          connection)
-    load_dataframe(revenue_per_user,   "revenue_per_user",   connection)
-    load_dataframe(revenue_by_country, "revenue_by_country", connection)
-    load_dataframe(daily_revenue,      "daily_revenue",      connection)
+    try:
+        connection = get_connection()
 
-    connection.close()
-    logger.info(f"All tables loaded into: {DB_PATH}")
+        load_dataframe(merged_df,          "fact_orders",        connection)
+        load_dataframe(users_df,           "dim_users",          connection)
+        load_dataframe(revenue_per_user,   "revenue_per_user",   connection)
+        load_dataframe(revenue_by_country, "revenue_by_country", connection)
+        load_dataframe(daily_revenue,      "daily_revenue",      connection)
 
+        logger.info(f"All tables loaded into: {DB_PATH}")
+
+    except Exception as e:
+        logger.error(f"Load failed: {e}")
+        raise
+
+    finally:
+        if connection:
+            connection.close()
+            logger.info("Database connection closed.")
 def verify_load():
     logger.info("Verifying loaded tables...")
     connection = get_connection()
