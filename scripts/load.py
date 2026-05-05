@@ -1,10 +1,9 @@
 import sqlite3
 import os
 from scripts.logger import get_logger
-
+from scripts.config import DB_PATH
 logger = get_logger("load")
 
-DB_PATH = "data/ecommerce.db"
 
 def get_connection():
     return sqlite3.connect(DB_PATH)

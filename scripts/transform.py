@@ -1,5 +1,7 @@
 import pandas as pd
 from scripts.logger import get_logger
+from scripts.config import MIN_ORDER_AMOUNT, START_DATE_FILTER
+
 
 logger = get_logger("transform")
 
@@ -26,9 +28,9 @@ def clean_users(df):
 def filter_orders(df):
     logger.info("Filtering orders...")
     before = len(df)
-    df = df[df["amount"] > 0]
+    df = df[df["amount"] > MIN_ORDER_AMOUNT]
     df = df[df["user_id"].notnull()]
-    df = df[df["order_date"] >= "2024-01-01"]
+    df = df[df["order_date"] >= START_DATE_FILTER]
     after = len(df)
     logger.info(f"Rows before filter: {before} → after: {after}")
     return df

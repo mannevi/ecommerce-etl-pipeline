@@ -3,8 +3,7 @@ import csv
 import os
 from datetime import datetime
 
-DB_PATH = "data/ecommerce.db"
-
+from scripts.config import DB_PATH, OUTPUT_DIR
 
 def get_connection():
     return sqlite3.connect(DB_PATH)
@@ -23,7 +22,7 @@ def export_to_csv(title, query, filename):
     columns = [desc[0] for desc in cursor.description]
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filepath = f"output/{filename}_{timestamp}.csv"
+    filepath = os.path.join(OUTPUT_DIR, f"{filename}_{timestamp}.csv")
 
     with open(filepath, "w", newline="") as f:
         writer = csv.writer(f)
