@@ -2,12 +2,14 @@ from scripts.extract import extract
 from scripts.transform import transform
 from scripts.load import load, verify_load
 from scripts.export import export_to_csv
+from scripts.quality_checks import run_all_checks
 from scripts.logger import get_logger
+from scripts.s3_upload import upload_all_reports, verify_s3_upload
 
 logger = get_logger("pipeline")
 
 def run_pipeline():
-    logger.info(" Starting E-commerce Pipeline...")
+    logger.info("Starting E-commerce Pipeline...")
 
     try:
         # Step 1 — Extract
@@ -22,7 +24,13 @@ def run_pipeline():
              revenue_by_country, daily_revenue)
         verify_load()
 
-        # Step 4 — Export
+        # Step 4 — Quality Checks
+        checks_passed = run_all_checks()
+        if not checks_passed:
+            logger.error("Pipeline stopped — data quality checks failed")
+            return
+
+        # Step 5 — Export
         export_to_csv(
             "Top Customers",
             "SELECT name, SUM(amount) AS total_revenue FROM fact_orders GROUP BY name ORDER BY total_revenue DESC",
@@ -38,6 +46,9 @@ def run_pipeline():
             "SELECT order_date, SUM(amount) AS daily_revenue FROM fact_orders GROUP BY order_date ORDER BY order_date",
             "daily_revenue"
         )
+          # Step 5 — Upload to S3
+        upload_all_reports()
+        verify_s3_upload()
 
         logger.info(" Pipeline complete. Reports ready in output/ folder.")
 
