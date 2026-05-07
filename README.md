@@ -100,7 +100,7 @@ ecommerce_pipeline/
  
 ## 🌐 Data Source
  
-**Type:** Synthetic CSV dataset simulating e-commerce orders and users
+**Type:** Synthetic CSV dataset simulating e-commerce transactions
 **orders.csv:** order_id, user_id, amount, order_date
 **users.csv:** user_id, name, country
  
