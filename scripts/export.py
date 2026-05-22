@@ -32,7 +32,16 @@ def export_to_csv(title, query, filename):
     print(f" '{title}' saved to: {filepath}")
     connection.close()
 
-
+def export_parquet(df, filename):
+    import pandas as pd
+    import os
+    from datetime import datetime
+    os.makedirs("output", exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filepath = f"output/{filename}_{timestamp}.parquet"
+    df.to_parquet(filepath, index=False)
+    print(f"Parquet export saved to: {filepath}")
+    return filepath
 if __name__ == "__main__":
 
     print(" Exporting reports...\n")

@@ -1,7 +1,7 @@
 from scripts.extract import extract
 from scripts.transform import transform
 from scripts.load import load, verify_load
-from scripts.export import export_to_csv
+from scripts.export import export_to_csv, export_parquet
 from scripts.quality_checks import run_all_checks
 from scripts.logger import get_logger
 from scripts.s3_upload import upload_all_reports, verify_s3_upload
@@ -46,7 +46,11 @@ def run_pipeline():
             "SELECT order_date, SUM(amount) AS daily_revenue FROM fact_orders GROUP BY order_date ORDER BY order_date",
             "daily_revenue"
         )
-          # Step 5 — Upload to S3
+
+        # Step 5b — Export Parquet (columnar format)
+        from scripts.export import export_parquet
+        export_parquet(merged_df, "orders_merged")
+         # Step 5 — Upload to S3
         upload_all_reports()
         verify_s3_upload()
 
