@@ -7,3 +7,4 @@ s3transfer==0.17.0
 six==1.17.0
 urllib3==2.7.0
 pyarrow 
+pandas==2.2.3
