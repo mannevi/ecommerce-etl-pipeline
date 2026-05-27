@@ -45,7 +45,13 @@ def run_pipeline():
             "Daily Revenue",
             "SELECT order_date, SUM(amount) AS daily_revenue FROM fact_orders GROUP BY order_date ORDER BY order_date",
             "daily_revenue"
-        )
+        ) 
+           export_to_csv(
+    "Customer Segments",
+    "SELECT name, SUM(amount) AS total_revenue, CASE WHEN SUM(amount) >= 500 THEN 'High Value' WHEN SUM(amount) >= 200 THEN 'Mid Value' ELSE 'Low Value' END AS customer_segment FROM fact_orders GROUP BY name ORDER BY total_revenue DESC",
+    "customer_segments"
+)
+
 
         # Step 5b — Export Parquet (columnar format)
         from scripts.export import export_parquet
